@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-
 export const getGreetings = createAsyncThunk(
   'greetings/getGreetings',
   async () => {
@@ -9,7 +8,7 @@ export const getGreetings = createAsyncThunk(
       const response = await axios.get('/greetings/api');
       return response.data;
     } catch (error) {
-      console.error(error);
+      throw new Error(`something went wrong: ${error.response.data}`);
     }
   },
 );
@@ -27,19 +26,24 @@ const greetingsSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(getGreetings.pending, (state) => {
+        /* eslint-disable no-param-reassign */
         state.loading = true;
+        /* eslint-enable no-param-reassign */
       })
       .addCase(getGreetings.fulfilled, (state, { payload }) => {
+        /* eslint-disable no-param-reassign */
         state.greetings = payload;
         state.loading = false;
         state.hasErrors = false;
+        /* eslint-enable no-param-reassign */
       })
       .addCase(getGreetings.rejected, (state) => {
+        /* eslint-disable no-param-reassign */
         state.loading = false;
         state.hasErrors = true;
+        /* eslint-enable no-param-reassign */
       });
-  }
+  },
 });
-
 
 export default greetingsSlice.reducer;
